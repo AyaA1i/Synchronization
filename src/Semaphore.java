@@ -17,7 +17,6 @@ class Semaphore{
         }else{
             System.out.println( device.Name +" (" + device.Type + ")" +" arrived");
         }
-        device.router.connect(device);
     }
     public synchronized void signal() {
         value++ ;
