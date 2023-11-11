@@ -1,27 +1,27 @@
+import static java.lang.Thread.sleep;
 
-class Semaphore{
+class Semaphore {
     protected int value;
+
     protected Semaphore(int initial) {
-        value = initial ;
+        value = initial;
     }
-    public synchronized void wait(Device device) throws InterruptedException {
-        value-- ;
-        if (value < 0){
+
+    public synchronized void Wait() throws InterruptedException {
+        value--;
+        if (value < 0) {
             try {
-                System.out.println(device.Name + " (" + device.Type + ")" + " arrived and waiting");
-                wait() ;
-            }
-            catch( InterruptedException e ) {
+                wait();
+            } catch (InterruptedException e) {
                 System.out.println("Device has been interrupted while waiting.");
             }
-        }else{
-            System.out.println( device.Name +" (" + device.Type + ")" +" arrived");
         }
     }
+
     public synchronized void signal() {
-        value++ ;
+        value++;
         if (value <= 0) {
-            notify() ;
+            notify();
         }
     }
 }

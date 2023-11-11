@@ -1,9 +1,6 @@
 import java.util.*;
-
-import static java.lang.Thread.sleep;
-
 public class Network {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args){
         int NumberOfConnections;
         int NumberOfDevices;
         List<Device> devices = new ArrayList<>();
@@ -13,12 +10,12 @@ public class Network {
         Router router = new Router(NumberOfConnections);
         System.out.println("What is the number of devices Clients want to connect?");
         NumberOfDevices = input.nextInt();
+        Semaphore semaphore = new Semaphore(NumberOfConnections);
         for (int i = 0; i < NumberOfDevices; i++) {
-            Device D = new Device(input.next(), input.next(),router);
+            Device D = new Device(input.next(), input.next(), router, semaphore);
             devices.add(D);
         }
         for (int i = 0; i < NumberOfDevices; i++) {
-            sleep(100);
             devices.get(i).start();
         }
 
