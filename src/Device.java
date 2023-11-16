@@ -1,4 +1,4 @@
-public class Device extends Thread {
+class Device extends Thread {
     private String Name;
     private String Type;
     private Router router;
@@ -10,25 +10,30 @@ public class Device extends Thread {
         this.router = router;
         this.semaphore = semaphore;
     }
-    private int connectDevice(){
+
+    private int connectDevice() {
+        try {
+            semaphore.Wait(this.Name, this.Type);
+        } catch (InterruptedException e) {
+            Network._print("Device is interrupted.");
+            e.printStackTrace();
+        }
         int connection = router.Connect();
         if (connection == -1) {
-            System.out.println("(" + this.Name + ")(" + this.Type + ") arrived and waiting");
-        } else {
-            System.out.println("(" + this.Name + ") " + "(" + this.Type + ") " + "arrived");
+            Network._print("connection = -1 : " + this.Name);
+            try {
+                sleep(10000000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            semaphore.Wait();
-        } catch (InterruptedException e) {
-            System.out.println("Device is interrupted.");
-        }
-        if (connection == -1) connection = router.Connect();
-        System.out.println("Connection " + (connection + 1) + ": " + this.Name + " Occupied");
-        System.out.println("Connection " + (connection + 1) + ": " + this.Name + " login");
+        Network._print("Connection " + (connection + 1) + ": " + this.Name + " Occupied");
+        Network._print("Connection " + (connection + 1) + ": " + this.Name + " login");
         return connection;
     }
-    private void doActivity(int connection){
-        System.out.println("Connection " + (connection + 1) + ": " + this.Name + " performs online activity");
+
+    private void doActivity(int connection) {
+        Network._print("Connection " + (connection + 1) + ": " + this.Name + " performs online activity");
         try {
             Thread.sleep(1000); // Simulating online activity
         } catch (InterruptedException e) {
@@ -36,11 +41,13 @@ public class Device extends Thread {
         }
 
     }
-    private void disconnectDevice(int connection){
-        System.out.println("Connection " + (connection + 1) + ": " + Name + " Logged out");
+
+    private void disconnectDevice(int connection) {
+        Network._print("Connection " + (connection + 1) + ": " + Name + " Logged out");
         router.Disconnect(connection);
         semaphore.signal();
     }
+
     @Override
     public void run() {
         int connection = connectDevice();
